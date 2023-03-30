@@ -8,4 +8,11 @@ CREATE TABLE IF NOT EXISTS animals
     age integer,
     animal_type varchar NOT NULL,
     CONSTRAINT pk_animal PRIMARY KEY (id)
-    )
+);
+
+-- changeset koledov:1
+CREATE TABLE shelters
+(
+    id   SERIAL PRIMARY KEY,
+    name TEXT
+);
