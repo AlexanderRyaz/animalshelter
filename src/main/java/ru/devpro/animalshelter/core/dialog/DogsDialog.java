@@ -8,6 +8,7 @@ import static ru.devpro.animalshelter.configuration.BotConstants.DOGS_MSG;
 
 @Component
 public class DogsDialog implements DialogInterface{
+
     @Override
     public boolean isSupport(DialogDto dialogDto) {
         return dialogDto.message().equals(DOGS_MSG);
