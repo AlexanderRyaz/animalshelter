@@ -29,7 +29,9 @@ public class BotService {
     /**
      *
      * Exception try-catch {@link IntervalDateIncorrectException}
-     * if {@link IntervalDateIncorrectException} a message comes out {@link ru.devpro.animalshelter.configuration.BotConstants} {@code  ERROR_MSG} - "Что-то пошло не так..."
+     * if {@link IntervalDateIncorrectException}
+     * a message comes out {@link ru.devpro.animalshelter.configuration.BotConstants}
+     * {@code  ERROR_MSG} - "Что-то пошло не так..."
      * @param update
      *
      */
