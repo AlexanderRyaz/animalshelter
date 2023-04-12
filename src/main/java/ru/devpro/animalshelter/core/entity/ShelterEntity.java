@@ -20,12 +20,15 @@ public class ShelterEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "address")
     private String address;
+
     @Column(name = "opening_hours")
-    private String openingHours;
+    private String opening_hours;
 
 
 
@@ -33,12 +36,12 @@ public class ShelterEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ShelterEntity that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(openingHours, that.openingHours);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(opening_hours, that.opening_hours);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address, openingHours);
+        return Objects.hash(id, name, address, opening_hours);
     }
 
     @Override
@@ -47,7 +50,7 @@ public class ShelterEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", openingHours='" + openingHours + '\'' +
+                ", openingHours='" + opening_hours + '\'' +
                 '}';
     }
 }

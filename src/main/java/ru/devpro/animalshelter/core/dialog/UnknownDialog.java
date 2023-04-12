@@ -1,5 +1,6 @@
 package ru.devpro.animalshelter.core.dialog;
 
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.devpro.animalshelter.core.dto.DialogDto;
@@ -22,5 +23,10 @@ public class UnknownDialog implements DialogInterface{
     @Override
     public String getMessage() {
         return PROBLEM_OCCURS_MSG;
+    }
+
+    @Override
+    public ReplyKeyboardMarkup getKeyboard() {
+        return null;
     }
 }
