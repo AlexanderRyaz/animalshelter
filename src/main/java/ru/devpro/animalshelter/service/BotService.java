@@ -42,7 +42,7 @@ public class BotService {
                     return;
                 }
                 Message incomeMessage = update.message();
-                DialogDto dto = new DialogDto(incomeMessage.chat().id(), incomeMessage.text());
+                DialogDto dto = new DialogDto(incomeMessage.chat().id(), incomeMessage.text(), incomeMessage.text());
                 if (dialog.isSupport(dto) && dialog.process(dto)) {
                     sendResponse(dto.chatId(), dialog.getMessage());
                     return;

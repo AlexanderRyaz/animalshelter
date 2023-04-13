@@ -8,11 +8,20 @@ CREATE TABLE animals
     animal_name TEXT
 );
 
--- changeset koledov:2
+-- changeset koledov:3
 CREATE TABLE shelters
 (
     id   SERIAL PRIMARY KEY,
     name TEXT,
     address TEXT,
-    openingHours TEXT
+    opening_hours TEXT
+);
+
+-- changeset koledov:2
+CREATE TABLE users
+(
+    id          SERIAL PRIMARY KEY,
+    user_name   TEXT,
+    chat_id     BIGINT,
+    is_volunteer BOOLEAN
 );
