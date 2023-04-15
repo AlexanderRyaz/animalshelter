@@ -20,7 +20,7 @@ public class DogsDialog implements DialogInterface{
     }
 
     @Override
-    public String getMessage() {
+    public String getMessage(Long chatId) {
         return DOGS_INFO_MSG;
     }
 

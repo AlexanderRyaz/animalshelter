@@ -9,8 +9,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.devpro.animalshelter.core.record.UserRecord;
+
+import ru.devpro.animalshelter.core.entity.UserEntity;
 import ru.devpro.animalshelter.service.UserService;
 
 import java.util.Collection;
@@ -33,15 +35,16 @@ public class UserController {
                             description = "Возвращает данные добавленного усыновителя",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = UserRecord.class)
+                                    schema = @Schema(implementation = UserEntity.class)
                             )
                     )
             }
     )
 
     @PostMapping
-    public UserRecord createUser(@RequestBody @Valid UserRecord userRecord) {
-        return userService.createUser(userRecord);
+    public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity userEntity) {
+        UserEntity createdUser = userService.createUser(userEntity);
+        return ResponseEntity.ok(userEntity);
     }
 
     // нахождение пользователя по id
@@ -53,15 +56,19 @@ public class UserController {
                             description = "Возвращает данные по id",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = UserRecord.class)
+                                    schema = @Schema(implementation = UserEntity.class)
                             )
                     )
             }
     )
     @GetMapping("{id}")
-    public UserRecord findUserById(@Parameter(description = "введите id пользователя", example = "1")
+    public ResponseEntity<UserEntity> findUserById(@Parameter(description = "введите id пользователя", example = "1")
                                    @PathVariable Long id) {
-        return userService.findUserById(id);
+        UserEntity userEntity = userService.findUserById(id);
+        if (userEntity == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userEntity);
     }
 
     // добавления животного пользователю по id
@@ -84,15 +91,16 @@ public class UserController {
                             description = "Удаленные данные из Бд",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = UserRecord.class)
+                                    schema = @Schema(implementation = UserEntity.class)
                             )
                     )
             }
     )
     @DeleteMapping("{id}")
-    public UserRecord deleteUser(@Parameter(description = "введите id пользователя", example = "1")
+    public ResponseEntity<UserEntity> deleteUser(@Parameter(description = "введите id пользователя", example = "1")
                                      @PathVariable Long id) {
-        return userService.deleteUser(id);
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 
     // нахождение всех пользователей
@@ -104,13 +112,13 @@ public class UserController {
                             description = "Вывод всех пользователей из Бд",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = UserRecord.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = UserEntity.class))
                             )
                     )
             }
     )
-    @GetMapping
-    public Collection<UserRecord> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/all")
+    public ResponseEntity<Collection<UserEntity>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }

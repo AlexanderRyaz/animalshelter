@@ -29,7 +29,7 @@ public class StartDialog implements DialogInterface{
     }
 
     @Override
-    public String getMessage() {
+    public String getMessage(Long chatId) {
         //сделать распознавание на нового пользователя через id диалога?
             return GREETING_MSG;
 

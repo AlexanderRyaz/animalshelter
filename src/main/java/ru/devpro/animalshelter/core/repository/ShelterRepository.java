@@ -6,4 +6,6 @@ import ru.devpro.animalshelter.core.entity.ShelterEntity;
 
 @Repository
 public interface ShelterRepository extends JpaRepository<ShelterEntity, Long> {
+
+    ShelterEntity findById(long id);
 }

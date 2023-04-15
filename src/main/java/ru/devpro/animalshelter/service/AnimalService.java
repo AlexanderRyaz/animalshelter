@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
 import ru.devpro.animalshelter.core.exception.AnimalNotFoundException;
-import ru.devpro.animalshelter.core.record.AnimalRecord;
-import ru.devpro.animalshelter.core.record.MapperRecord;
 import ru.devpro.animalshelter.core.repository.AnimalRepository;
 
 import java.util.Collection;
@@ -16,24 +14,22 @@ import java.util.stream.Collectors;
 public class AnimalService {
     private final Logger logger = LoggerFactory.getLogger(AnimalService.class);
     private final AnimalRepository animalRepository;
-    private final MapperRecord mapperRecord;
 
-    public AnimalService(AnimalRepository animalRepository, MapperRecord mapperRecord) {
+    public AnimalService(AnimalRepository animalRepository) {
         this.animalRepository = animalRepository;
-        this.mapperRecord = mapperRecord;
 
     }
 
     /**
      * Метод создает животное
      *
-     * @param animalRecord - животное
+     * @param animalEntity - животное
      * @return возвращает созданое животное
      */
-    public AnimalRecord createAnimal(AnimalRecord animalRecord) {
+    public AnimalEntity createAnimal(AnimalEntity animalEntity) {
         logger.info("Вызов метода createAnimal");
-        AnimalEntity animalEntity = mapperRecord.toEntity(animalRecord);
-        return mapperRecord.toRecord(animalRepository.save(animalEntity));
+
+        return animalRepository.save(animalEntity);
     }
 
     /**
@@ -42,46 +38,35 @@ public class AnimalService {
      * @param id - животного
      * @return возвращает найденное животное
      */
-    public AnimalRecord findAnimalById(Long id) {
+    public AnimalEntity findAnimalById(long id) {
         logger.info("Метод поиска животного по id");
-        return mapperRecord.toRecord(animalRepository.findById(id).orElseThrow(() -> {
-                    logger.error("Не обнаруженно животное с id = {}", id);
-                    return new AnimalNotFoundException(id);
-                }));
+        return animalRepository.findById(id);
     }
 
     /**
      * метод измкнения параметров животного
      *
      * @param id - id животного
-     * @param animalRecord - животное
+     *
      * @return вощвращает животное
      */
-    public AnimalRecord editAnimal(Long id, AnimalRecord animalRecord) {
+    public AnimalEntity editAnimal(long id, AnimalEntity animalEntity) {
         logger.info("Вызов метода редактирования editAnimal");
-        AnimalEntity oldAnimal = animalRepository.findById(id).orElseThrow(() -> {
-            logger.error("Не обнаруженно животное с id = {}", id);
-            return new AnimalNotFoundException(id);
-        });
-        oldAnimal.setAnimalName(animalRecord.getAnimalName());
-        oldAnimal.setAnimalType(animalRecord.getAnimalType());
-        return mapperRecord.toRecord(animalRepository.save(oldAnimal));
+        if (animalRepository.findById(animalEntity.getId()).isPresent()) {
+            return animalRepository.findById(id);
+        }
+        return null;
     }
 
     /**
      * метод удалениия по id из БД
      *
      * @param id - животного
-     * @return возвращает животное которое было удалено
      */
-    public AnimalRecord deleteAnimal(Long id) {
-        logger.info("Вызов метода deleteAnimal(Long id)");
-        AnimalEntity animalEntity = animalRepository.findById(id).orElseThrow(() -> {
-                    logger.error("Не обнаруженно животное с id = {}", id);
-                    return new AnimalNotFoundException(id);
-                });
-        animalRepository.delete(animalEntity);
-        return mapperRecord.toRecord(animalEntity);
+    public void deleteAnimal(long id) {
+        logger.info("Вызов метода deleteAnimal(long id)");
+
+        animalRepository.deleteById(id);
     }
 
     /**
@@ -89,9 +74,9 @@ public class AnimalService {
      *
      * @return возвращает всех животных
      */
-    public Collection<AnimalRecord> getAllAnimals() {
+    public Collection<AnimalEntity> getAllAnimals() {
         logger.info("Вызов метода getAllAnimals()");
 
-        return animalRepository.findAll().stream().map(mapperRecord::toRecord).collect(Collectors.toList());
+        return animalRepository.findAll();
     }
 }
