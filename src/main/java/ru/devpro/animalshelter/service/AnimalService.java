@@ -53,7 +53,7 @@ public class AnimalService {
     public AnimalEntity editAnimal(long id, AnimalEntity animalEntity) {
         logger.info("Вызов метода редактирования editAnimal");
         if (animalRepository.findById(animalEntity.getId()).isPresent()) {
-            return animalRepository.findById(id);
+            return animalRepository.save(animalEntity);
         }
         return null;
     }
