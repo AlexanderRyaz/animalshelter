@@ -29,7 +29,7 @@ public class ShelterService {
         return shelterRepository.findById(id);
     }
 
-    public ShelterEntity editShelter(ShelterEntity shelterEntity) {
+    public ShelterEntity editShelter(long l, ShelterEntity shelterEntity) {
         logger.info("Вызов метода редактирования приюта");
         if (shelterRepository.findById(shelterEntity.getId()).isPresent()) {
             return shelterRepository.save(shelterEntity);
