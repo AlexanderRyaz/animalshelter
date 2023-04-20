@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest({AnimalService.class, AnimalRepository.class})
@@ -45,7 +46,7 @@ class AnimalServiceTest {
         animalEntity.setAnimalName("Guchka");
         animalEntity.setAnimalType(AnimalType.DOG);
 
-        when(animalRepository.findById(any())).thenReturn(Optional.of(animalEntity));
+        when(animalRepository.findById(anyLong())).thenReturn(animalEntity);
         AnimalEntity animal = animalService.findAnimalById(1L);
         assertEquals(1L, animal.getId());
         assertEquals("Guchka", animal.getAnimalName());
@@ -60,10 +61,12 @@ class AnimalServiceTest {
         animalEntity.setAnimalType(AnimalType.DOG);
 
         AnimalEntity animalEntity1 = new AnimalEntity();
+        animalEntity1.setId(1L);
         animalEntity1.setAnimalName("Guc");
         animalEntity1.setAnimalType(AnimalType.DOG);
 
-        when(animalRepository.findById(any())).thenReturn(Optional.of(animalEntity));
+        when(animalRepository.findById(anyLong())).thenReturn(animalEntity);
+        when(animalRepository.save(any())).thenReturn(animalEntity1);
         AnimalEntity animal = animalService.editAnimal(1L, animalEntity1);
         assertEquals(1L, animal.getId());
         assertEquals("Guc", animal.getAnimalName());

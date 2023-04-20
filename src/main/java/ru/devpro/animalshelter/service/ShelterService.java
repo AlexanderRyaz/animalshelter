@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.devpro.animalshelter.core.entity.ShelterEntity;
+import ru.devpro.animalshelter.core.exception.AnimalNotFoundException;
 import ru.devpro.animalshelter.core.repository.ShelterRepository;
 
 import java.util.Collection;
@@ -31,10 +32,11 @@ public class ShelterService {
 
     public ShelterEntity editShelter(long l, ShelterEntity shelterEntity) {
         logger.info("Вызов метода редактирования приюта");
-        if (shelterRepository.findById(shelterEntity.getId()).isPresent()) {
+        ShelterEntity byId = shelterRepository.findById(l);
+        if (byId!=null) {
             return shelterRepository.save(shelterEntity);
         }
-        return null;
+        throw new AnimalNotFoundException(l);
     }
 
     public void deleteShelter(long id) {

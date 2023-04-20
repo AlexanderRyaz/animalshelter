@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
+import ru.devpro.animalshelter.core.entity.ShelterEntity;
 import ru.devpro.animalshelter.core.exception.AnimalNotFoundException;
 import ru.devpro.animalshelter.core.repository.AnimalRepository;
 
@@ -44,7 +45,7 @@ public class AnimalService {
     }
 
     /**
-     * метод измкнения параметров животного
+     * метод изменения параметров животного
      *
      * @param id - id животного
      *
@@ -52,7 +53,8 @@ public class AnimalService {
      */
     public AnimalEntity editAnimal(long id, AnimalEntity animalEntity) {
         logger.info("Вызов метода редактирования editAnimal");
-        if (animalRepository.findById(animalEntity.getId()).isPresent()) {
+        AnimalEntity byId = animalRepository.findById(id);
+        if (byId!=null) {
             return animalRepository.save(animalEntity);
         }
         return null;

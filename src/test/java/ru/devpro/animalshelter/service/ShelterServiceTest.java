@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest({ShelterService.class, ShelterRepository.class})
@@ -48,7 +49,7 @@ class ShelterServiceTest {
         shelterEntity.setAddress("Moscow");
         shelterEntity.setOpening_hours("09:00");
 
-        when(shelterRepository.findById(any())).thenReturn(Optional.of(shelterEntity));
+        when(shelterRepository.findById(anyLong())).thenReturn((shelterEntity));
         ShelterEntity shelter = shelterService.findShelterById(1L);
         assertEquals(1L, shelter.getId());
         assertEquals("Good hands", shelter.getName());
@@ -65,11 +66,13 @@ class ShelterServiceTest {
         shelterEntity.setOpening_hours("09:00");
 
         ShelterEntity shelterEntity1 = new ShelterEntity();
+        shelterEntity1.setId(1L);
         shelterEntity1.setName("Dog");
         shelterEntity1.setOpening_hours("08:00");
         shelterEntity1.setAddress("Piter");
 
-        when(shelterRepository.findById(any())).thenReturn(Optional.of(shelterEntity));
+        when(shelterRepository.findById(anyLong())).thenReturn(((shelterEntity)));
+        when(shelterRepository.save(any())).thenReturn(shelterEntity1);
         ShelterEntity shelter = shelterService.editShelter(1L, shelterEntity1);
         assertEquals(1L, shelter.getId());
         assertEquals("Dog", shelter.getName());
