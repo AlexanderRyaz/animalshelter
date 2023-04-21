@@ -36,7 +36,8 @@ public class ShelterEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ShelterEntity that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(opening_hours, that.opening_hours);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
+                && Objects.equals(address, that.address) && Objects.equals(opening_hours, that.opening_hours);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class UserService {
     }
 
     public UserEntity createUser(UserEntity userEntity) {
-        logger.info("вызов метода сщздания пользователя");
+        logger.info("вызов метода создания пользователя");
         return userRepository.save(userEntity);
     }
 

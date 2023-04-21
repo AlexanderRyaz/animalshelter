@@ -82,7 +82,7 @@ public class ShelterController {
     )
     @PutMapping
     public ResponseEntity<ShelterEntity> editShelter(@RequestBody ShelterEntity shelterEntity) {
-        ShelterEntity editedShelter = shelterService.editShelter(shelterEntity);
+        ShelterEntity editedShelter = shelterService.editShelter(1L, shelterEntity);
         if (editedShelter == null) {
             return ResponseEntity.notFound().build();
         }
