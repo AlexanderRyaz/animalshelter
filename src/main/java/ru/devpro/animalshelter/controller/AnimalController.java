@@ -77,7 +77,7 @@ public class AnimalController {
         if (editedAnimal == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(animalEntity);
+        return ResponseEntity.ok(editedAnimal);
     }
 
     @ApiResponses({
