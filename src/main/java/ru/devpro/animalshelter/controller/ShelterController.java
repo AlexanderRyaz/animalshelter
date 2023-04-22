@@ -80,7 +80,7 @@ public class ShelterController {
                     )
             }
     )
-    @PutMapping
+    @PutMapping("{id}")
     public ResponseEntity<ShelterEntity> editShelter(@RequestBody ShelterEntity shelterEntity) {
         ShelterEntity editedShelter = shelterService.editShelter(1L, shelterEntity);
         if (editedShelter == null) {
