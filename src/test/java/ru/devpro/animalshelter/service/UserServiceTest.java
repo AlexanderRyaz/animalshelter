@@ -18,7 +18,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @WebMvcTest({UserService.class, UserRepository.class, AnimalRepository.class, TelegramBot.class})
 class UserServiceTest {
@@ -64,10 +65,6 @@ class UserServiceTest {
         assertTrue(true);
     }
 
-//    @Test
-//    void addUserAnimal() {
-//
-//    }
 
     @Test
     void getAllUsers() {
@@ -80,5 +77,11 @@ class UserServiceTest {
         when(userRepository.findAll()).thenReturn(List.of(userEntity));
         Collection<UserEntity> allUsers = userService.getAllUsers();
         assertEquals(1, allUsers.size());
+    }
+    @Test
+    void deleteUser() {
+        doNothing().when(userRepository).deleteById(anyLong());
+        userService.deleteUser(5L);
+        verify(userRepository, times(1)).deleteById(anyLong());
     }
 }

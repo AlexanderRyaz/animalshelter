@@ -64,7 +64,7 @@ public class UserController {
     )
     @GetMapping("{id}")
     public ResponseEntity<UserEntity> findUserById(@Parameter(description = "введите id пользователя", example = "1")
-                                   @PathVariable Long id) {
+                                                   @PathVariable Long id) {
         UserEntity userEntity = userService.findUserById(id);
         if (userEntity == null) {
             return ResponseEntity.notFound().build();
@@ -79,9 +79,7 @@ public class UserController {
                     description = "Возвращает данные добавленного питомца и усыновителя"
             )
     })
-    public void addUserAnimal() {
-        return;
-    }
+
 
     // удаление пользователя
     @Operation(
@@ -98,8 +96,7 @@ public class UserController {
             }
     )
     @DeleteMapping("{id}")
-    public ResponseEntity<UserEntity> deleteUser(@Parameter(description = "введите id пользователя", example = "1")
-                                     @PathVariable Long id) {
+    public ResponseEntity<UserEntity> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }

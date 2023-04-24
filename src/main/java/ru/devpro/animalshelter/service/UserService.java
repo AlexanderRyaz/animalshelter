@@ -38,9 +38,6 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public void addUserAnimal() {
-
-    }
 
     public void deleteUser(long id) {
         logger.info("вызов метода удаления пользователя");
