@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import ru.devpro.animalshelter.core.entity.ReportEntity;
 import ru.devpro.animalshelter.core.entity.UserEntity;
 import ru.devpro.animalshelter.service.UserService;
 
@@ -43,8 +45,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity userEntity) {
-        UserEntity createdUser = userService.createUser(userEntity);
-        return ResponseEntity.ok(userEntity);
+
+        return ResponseEntity.ok(userService.createUser(userEntity));
     }
 
     // нахождение пользователя по id
@@ -72,14 +74,26 @@ public class UserController {
     }
 
     // добавления животного пользователю по id
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Возвращает данные добавленного питомца и усыновителя"
-            )
-    })
-    public void addUserAnimal() {
-        return;
+    @Operation(
+            summary = "Прикрепление животного за пользователем по id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Прикрепление животного за пользователем по id",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserEntity.class)
+                            )
+                    )
+            }
+    )
+    @PatchMapping("/{id}/animal")
+    public ResponseEntity<UserEntity> addUserAnimal(
+            @Parameter(description = "id пользователя", example = "1")
+            @PathVariable Long id,
+            @Parameter(description = "id животного", example = "1")
+            @RequestParam("animalId") Long animalId) {
+        return ResponseEntity.ok(userService.addUserAnimal(id, animalId));
     }
 
     // удаление пользователя
@@ -120,5 +134,70 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<Collection<UserEntity>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @Operation(
+            summary = "Отправка сообщения пользователю",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "тправка сообщения пользователю",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserEntity.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("{id}/message")
+    public String sendMessageToUser(
+            @Parameter(description = "id пользователя", example = "1")
+            @PathVariable Long id,
+            @Parameter(description = "Текст сообщения", example = "отчет неверно заполнен")
+            @RequestParam("text") String text) {
+        userService.sendMessageToUser(id, text);
+        return "Сообщение отправлено";
+    }
+
+    @Operation(
+            summary = "Изменение испытательного срока",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Изменение испытательного срока",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserEntity.class)
+                            )
+                    )
+            }
+    )
+    @PatchMapping("{id}/period")
+    public ResponseEntity<UserEntity> extendPeriod(
+            @Parameter(description = "id пользователя", example = "1")
+            @PathVariable Long id,
+            @Parameter(description = "Количество дней", example = "14")
+            @RequestParam("numder") Integer number) {
+        return ResponseEntity.ok(userService.extendPeriod(id, number));
+    }
+
+    @Operation(
+            summary = "Поиск отчетов пользователя",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Поиск отчетов пользователя",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserEntity.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("{id}/reports")
+    public ResponseEntity<Collection<ReportEntity>> findReportUser(
+            @Parameter(description = "id пользователя", example = "1")
+            @PathVariable Long id) {
+        return ResponseEntity.ok(userService.findReportUser(id));
     }
 }

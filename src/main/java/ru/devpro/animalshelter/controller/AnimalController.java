@@ -7,12 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
 import ru.devpro.animalshelter.service.AnimalService;
+import ru.devpro.animalshelter.service.ReportService;
 
 
 import java.util.Collection;
@@ -22,9 +23,11 @@ import java.util.Collection;
 public class AnimalController {
 
     private final AnimalService animalService;
+    private final ReportService reportService;
 
-    public AnimalController(AnimalService animalService) {
+    public AnimalController(AnimalService animalService, ReportService reportService) {
         this.animalService = animalService;
+        this.reportService = reportService;
     }
 
     @Operation(
@@ -63,14 +66,22 @@ public class AnimalController {
         return ResponseEntity.ok(animalService.getAllAnimals());
     }
 
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Возвращает данные измененного питомца"
-            )
-    })
+    @Operation(
+            summary = "изменение записи животного",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Возвращает данные измененного питомца",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = AnimalEntity.class)
+                            )
+                    )
+            }
+    )
     @PutMapping("{id}")
     public ResponseEntity<AnimalEntity> editAnimal(
+            @Parameter(description = "id животного", example = "1")
             @PathVariable Long id,
             @RequestBody AnimalEntity animalEntity) {
         AnimalEntity editedAnimal = animalService.editAnimal(id, animalEntity);
@@ -98,12 +109,34 @@ public class AnimalController {
     }
 
     @ApiResponse(responseCode = "200")
-    @DeleteMapping ("{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<AnimalEntity> deleteAnimal(
             @Parameter(description = "id животного которого нужно удалить", example = "1")
             @PathVariable Long id) {
 
         animalService.deleteAnimal(id);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "Ппросмотр фото по id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Просмотр фото по id",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ReportService.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("/photo/{id}")
+    public ResponseEntity<byte[]> getPhoto(@Parameter(description = "Введите id фотографии", example = "1")
+                                           @PathVariable long id) {
+        Pair<String, byte[]> pair = reportService.getPhoto(id);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(pair.getFirst()))
+                .contentLength(pair.getSecond().length)
+                .body(pair.getSecond());
     }
 }

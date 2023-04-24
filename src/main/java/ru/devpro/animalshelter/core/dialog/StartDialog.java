@@ -30,8 +30,12 @@ public class StartDialog implements DialogInterface{
 
     @Override
     public String getMessage(Long chatId) {
-        //сделать распознавание на нового пользователя через id диалога?
+        if (userService.createUser(dialog)) {
+
             return GREETING_MSG;
+        } else {
+            return "Привет! Чем я вам могу помочь?";
+        }
 
     }
 

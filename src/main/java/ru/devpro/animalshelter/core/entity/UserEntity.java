@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +27,19 @@ public class UserEntity {
     @Column(name = "is_volunteer")
     private Boolean isVolunteer;
 
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "date")
+    private LocalDateTime date;
+
+    @OneToOne
+    @JoinColumn(name = "animalId")
+    private AnimalEntity animalEntity;
+
+    @OneToMany(mappedBy = "userEntity")
+    private List<ReportEntity> reportEntity;
+
     public UserEntity(Long chatId) {
         this.chatId = chatId;
     }
@@ -37,6 +52,14 @@ public class UserEntity {
 
     public UserEntity() {
 
+    }
+
+    public List<ReportEntity> getReportEntity() {
+        return reportEntity;
+    }
+
+    public AnimalEntity getAnimalEntity() {
+        return animalEntity;
     }
 
     @Override
