@@ -48,7 +48,7 @@ class UserControllerTest {
         user.setUserName("Sasha");
         user.setIsVolunteer(false);
 
-        when(userService.createUser(any())).thenReturn(userEntity);
+        when(userService.createUser(any(UserEntity.class))).thenReturn(userEntity);
         mockMvc.perform(MockMvcRequestBuilders
                         .post(ANIMAL_USER)
                         .content(new ObjectMapper().writeValueAsString(user))
