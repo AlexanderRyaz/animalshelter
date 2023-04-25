@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
 import ru.devpro.animalshelter.core.entity.ShelterEntity;
+import ru.devpro.animalshelter.core.exception.AnimalNotFoundException;
 import ru.devpro.animalshelter.core.model.AnimalType;
 import ru.devpro.animalshelter.core.repository.ShelterRepository;
 
@@ -16,7 +17,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @WebMvcTest({ShelterService.class, ShelterRepository.class})
 class ShelterServiceTest {
@@ -81,6 +83,14 @@ class ShelterServiceTest {
     }
 
     @Test
+    void editShelterWithNull() throws Exception {
+
+        when(shelterRepository.findById(anyLong())).thenReturn(null);
+        assertThrows(AnimalNotFoundException.class, () -> shelterService.editShelter(7L, new ShelterEntity()));
+
+    }
+
+    @Test
     void getAllShelters() {
         ShelterEntity shelterEntity = new ShelterEntity();
         shelterEntity.setId(1L);
@@ -88,8 +98,15 @@ class ShelterServiceTest {
         shelterEntity.setAddress("Moscow");
         shelterEntity.setOpening_hours("09:00");
 
-        when(shelterRepository.findAll()).thenReturn (List.of(shelterEntity));
-        Collection<ShelterEntity>shelterEntities = shelterService.getAllShelters();
+        when(shelterRepository.findAll()).thenReturn(List.of(shelterEntity));
+        Collection<ShelterEntity> shelterEntities = shelterService.getAllShelters();
         assertEquals(1, shelterEntities.size());
+    }
+
+    @Test
+    void deleteShelter() {
+        doNothing().when(shelterRepository).deleteById(anyLong());
+        shelterService.deleteShelter(5L);
+        verify(shelterRepository, times(1)).deleteById(anyLong());
     }
 }

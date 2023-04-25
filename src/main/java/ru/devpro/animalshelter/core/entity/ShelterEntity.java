@@ -1,8 +1,10 @@
 package ru.devpro.animalshelter.core.entity;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Objects;
 
@@ -30,28 +32,4 @@ public class ShelterEntity {
     @Column(name = "opening_hours")
     private String opening_hours;
 
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ShelterEntity that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-                && Objects.equals(address, that.address) && Objects.equals(opening_hours, that.opening_hours);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, address, opening_hours);
-    }
-
-    @Override
-    public String toString() {
-        return "ShelterEntity{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", openingHours='" + opening_hours + '\'' +
-                '}';
-    }
 }
