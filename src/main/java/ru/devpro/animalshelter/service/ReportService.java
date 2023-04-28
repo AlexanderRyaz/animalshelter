@@ -7,6 +7,7 @@ import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import ru.devpro.animalshelter.core.entity.PhotoEntity;
@@ -25,6 +26,8 @@ import java.time.LocalDateTime;
 public class ReportService {
     private final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
+    @Value("${path.to.reports.folder}")
+    private String reportsDir;
     private final TelegramBot telegramBot;
     private final PhotoRepository photoRepository;
 
@@ -35,7 +38,7 @@ public class ReportService {
     }
 
     private Path createPath(Long chatIdMs, String fileFormat) throws IOException {
-        StringBuilder pathFolder = new StringBuilder();
+        StringBuilder pathFolder = new StringBuilder(reportsDir + "/");
         if (createFolder(pathFolder.toString())) {
             pathFolder.append(chatIdMs).append("/");
             if (createFolder(pathFolder.toString())) {
