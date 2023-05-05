@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public boolean createUser(DialogDto dialogDto) {
-        UserEntity userEntity = findUserById(dialogDto.chatId());
+        UserEntity userEntity = userRepository.findById(dialogDto.chatId()).orElse(null);
         if (userEntity == null) {
             userEntity = new UserEntity(dialogDto.name(), dialogDto.chatId(), false);
             userRepository.save(userEntity);
@@ -53,7 +53,10 @@ public class UserService {
 
     public UserEntity findUserById(long id) {
         logger.info("Вызов методв поиска пользователей по id");
-        return userRepository.findById(id);
+        return userRepository.findById(id).orElseThrow(() -> {
+            logger.error("Пользователь с id = {} не найден", id);
+            return new UserNotFoundException(id);
+        });
     }
 
     public UserEntity addUserAnimal(Long id, Long animalId) {

@@ -13,8 +13,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
 import ru.devpro.animalshelter.core.model.AnimalType;
 import ru.devpro.animalshelter.service.AnimalService;
+import ru.devpro.animalshelter.service.ReportService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,12 +26,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({AnimalController.class, AnimalService.class})
+@WebMvcTest({AnimalController.class, AnimalService.class, ReportService.class})
 class AnimalControllerTest {
     private static final String ANIMAL_MAPPING = "/animal";
     @Autowired
     private MockMvc mockMvc;
-
+    @MockBean
+    private ReportService reportService;
+    @Autowired
+    private AnimalController animalController;
     @MockBean
     private AnimalService animalService;
 
@@ -125,7 +130,7 @@ class AnimalControllerTest {
         animalEntity.setAnimalName("Sharik");
         animalEntity.setId(7L);
 
-        when(animalService.findAnimalById(anyLong())).thenReturn(animalEntity);
+        when(animalService.findAnimalById(anyLong())).thenReturn(Optional.of(animalEntity));
         mockMvc.perform(MockMvcRequestBuilders
                         .get(ANIMAL_MAPPING + "/" + 7)
                         .accept(MediaType.APPLICATION_JSON))

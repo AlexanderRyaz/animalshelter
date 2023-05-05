@@ -4,12 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
-import ru.devpro.animalshelter.core.entity.ShelterEntity;
-import ru.devpro.animalshelter.core.exception.AnimalNotFoundException;
 import ru.devpro.animalshelter.core.repository.AnimalRepository;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class AnimalService {
@@ -39,7 +37,7 @@ public class AnimalService {
      * @param id - животного
      * @return возвращает найденное животное
      */
-    public AnimalEntity findAnimalById(long id) {
+    public Optional<AnimalEntity> findAnimalById(long id) {
         logger.info("Метод поиска животного по id");
         return animalRepository.findById(id);
     }
@@ -53,8 +51,8 @@ public class AnimalService {
      */
     public AnimalEntity editAnimal(long id, AnimalEntity animalEntity) {
         logger.info("Вызов метода редактирования editAnimal");
-        AnimalEntity byId = animalRepository.findById(id);
-        if (byId!=null) {
+        Optional<AnimalEntity> byId = animalRepository.findById(id);
+        if (byId.isPresent()) {
             return animalRepository.save(animalEntity);
         }
         return null;

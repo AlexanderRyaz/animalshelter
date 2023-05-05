@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.devpro.animalshelter.core.dto.DialogDto;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
 import ru.devpro.animalshelter.core.entity.UserEntity;
 import ru.devpro.animalshelter.core.model.AnimalType;
 import ru.devpro.animalshelter.core.repository.AnimalRepository;
 import ru.devpro.animalshelter.core.repository.UserRepository;
 
+import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +59,7 @@ class UserServiceTest {
         userEntity.setChatId(2L);
         userEntity.setIsVolunteer(true);
 
-        when(userRepository.findById(anyLong())).thenReturn(userEntity);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
         UserEntity user = userService.findUserById(1L);
         assertEquals(1L, user.getId());
         assertEquals("Oleg", user.getUserName());
@@ -78,10 +80,47 @@ class UserServiceTest {
         Collection<UserEntity> allUsers = userService.getAllUsers();
         assertEquals(1, allUsers.size());
     }
+
     @Test
     void deleteUser() {
         doNothing().when(userRepository).deleteById(anyLong());
         userService.deleteUser(5L);
         verify(userRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    void dialogCreateUser() {
+        DialogDto dialogDto = new DialogDto(1L, "Oleg", "Привет! Чем я вам могу помочь?");
+        UserEntity userEntity = new UserEntity(dialogDto.name(), dialogDto.chatId(), false);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
+        boolean user = userService.createUser(dialogDto);
+        assertFalse(user);
+
+    }
+
+    @Test
+    void dtoCreateUser(){
+        DialogDto dialogDto = new DialogDto(1L, "Oleg", "Привет! Чем я вам могу помочь?");
+        UserEntity userEntity = new UserEntity(dialogDto.name(), dialogDto.chatId(), false);
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(userRepository.save(any())).thenReturn(userEntity);
+        boolean user = userService.createUser(dialogDto);
+        assertTrue(user);
+    }
+
+    @Test
+    void addUser() {
+        UserEntity userEntity = new UserEntity("Oleg",1L, false);
+        AnimalEntity animalEntity = new AnimalEntity();
+        animalEntity.setId(1L);
+        animalEntity.setAnimalName("Guchka");
+        animalEntity.setAnimalType(AnimalType.DOG);
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userEntity));
+        when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animalEntity));
+        UserEntity user = userService.addUserAnimal(5L, 2L);
+        assertEquals("Oleg",user.getUserName());
+        assertEquals(2L,user.getAnimalEntity().getId());
+
     }
 }
