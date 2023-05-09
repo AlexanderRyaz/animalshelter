@@ -6,8 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.util.Pair;
 import ru.devpro.animalshelter.core.entity.PhotoEntity;
 import ru.devpro.animalshelter.core.entity.ReportEntity;
+import ru.devpro.animalshelter.core.exception.PhotoNotFoundException;
 import ru.devpro.animalshelter.core.repository.PhotoRepository;
 import ru.devpro.animalshelter.core.repository.ReportRepository;
 
@@ -41,16 +43,24 @@ class ReportServiceTest {
     void getPhoto() {
         PhotoEntity photoEntity = new PhotoEntity();
         photoEntity.setId(1L);
-        photoEntity.setFileMediaType("jpeg");
+        photoEntity.setFileMediaType("image/jpeg");
         photoEntity.setFilePath("a/b");
         photoEntity.setFileSize(1000L);
         photoEntity.setFileData(new byte[]{1, 2, 3});
-
-//       when(reportRepository.findById(anyLong())).thenReturn(photoEntity);
-
+        when(photoRepository.findById(anyLong())).thenReturn(Optional.of(photoEntity));
+        Pair<String, byte[]> photo = reportService.getPhoto(1L);
+        assertEquals("image/jpeg", photo.getFirst());
     }
 
     @Test
     void findById() {
+    }
+
+    @Test
+    void getPhotoNotFound() {
+
+        when(photoRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(PhotoNotFoundException.class, () -> reportService.getPhoto(1L));
+
     }
 }

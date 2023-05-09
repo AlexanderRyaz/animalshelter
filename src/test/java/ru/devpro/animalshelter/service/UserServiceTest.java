@@ -209,4 +209,15 @@ class UserServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertThrows(UserNotFoundException.class, () -> userService.findReportUser(1L));
     }
+
+    @Test
+    void findUserByIdUserNotFound() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> userService.findUserById(1L));
+    }
+    @Test
+    void extendPeriodNotFound() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundException.class, () -> userService.extendPeriod(1L,10));
+    }
 }
