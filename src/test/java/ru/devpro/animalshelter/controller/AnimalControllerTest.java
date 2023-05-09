@@ -7,14 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
 import ru.devpro.animalshelter.core.model.AnimalType;
 import ru.devpro.animalshelter.service.AnimalService;
+import ru.devpro.animalshelter.service.ReportService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,12 +27,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest({AnimalController.class, AnimalService.class})
+@WebMvcTest({AnimalController.class, AnimalService.class, ReportService.class})
 class AnimalControllerTest {
     private static final String ANIMAL_MAPPING = "/animal";
     @Autowired
     private MockMvc mockMvc;
-
+    @MockBean
+    private ReportService reportService;
+    @Autowired
+    private AnimalController animalController;
     @MockBean
     private AnimalService animalService;
 
@@ -125,7 +131,7 @@ class AnimalControllerTest {
         animalEntity.setAnimalName("Sharik");
         animalEntity.setId(7L);
 
-        when(animalService.findAnimalById(anyLong())).thenReturn(animalEntity);
+        when(animalService.findAnimalById(anyLong())).thenReturn(Optional.of(animalEntity));
         mockMvc.perform(MockMvcRequestBuilders
                         .get(ANIMAL_MAPPING + "/" + 7)
                         .accept(MediaType.APPLICATION_JSON))
@@ -139,7 +145,7 @@ class AnimalControllerTest {
     void findAnimalWithNull() throws Exception {
 
 
-        when(animalService.findAnimalById(anyLong())).thenReturn(null);
+        when(animalService.findAnimalById(anyLong())).thenReturn(Optional.empty());
         mockMvc.perform(MockMvcRequestBuilders
                         .get(ANIMAL_MAPPING + "/" + 7)
                         .accept(MediaType.APPLICATION_JSON))
@@ -155,5 +161,15 @@ class AnimalControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    void getPhoto() throws Exception {
+        Pair<String, byte[]> pair = Pair.of("image/jpeg", new byte[]{1, 2, 3});
+        when(reportService.getPhoto(anyLong())).thenReturn(pair);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(ANIMAL_MAPPING + "/photo/" + 7)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

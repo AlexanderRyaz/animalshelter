@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.devpro.animalshelter.core.entity.AnimalEntity;
+import ru.devpro.animalshelter.core.entity.ReportEntity;
 import ru.devpro.animalshelter.core.entity.ShelterEntity;
 import ru.devpro.animalshelter.core.entity.UserEntity;
 import ru.devpro.animalshelter.core.model.AnimalType;
@@ -48,7 +49,7 @@ class UserControllerTest {
         user.setUserName("Sasha");
         user.setIsVolunteer(false);
 
-        when(userService.createUser((UserEntity) any())).thenReturn(userEntity);
+        when(userService.createUser(any(UserEntity.class))).thenReturn(userEntity);
         mockMvc.perform(MockMvcRequestBuilders
                         .post(ANIMAL_USER)
                         .content(new ObjectMapper().writeValueAsString(user))
@@ -90,7 +91,14 @@ class UserControllerTest {
                 .andExpect(status().isNotFound());
     }
     @Test
-    void addUserAnimal() {
+    void addUserAnimal() throws Exception {
+        UserEntity userEntity = new UserEntity("Oleg", 1L, false);
+        when(userService.addUserAnimal(1L,3L)).thenReturn(userEntity);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch(ANIMAL_USER + "/7/animal" )
+                        .param("animalId","3")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
 
     }
 
@@ -127,5 +135,31 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[*].userName", containsInAnyOrder("Sasha", "Sergei")))
                 .andExpect(jsonPath("$[*].chatId", containsInAnyOrder(1, 3)))
                 .andExpect(jsonPath("$[*].isVolunteer", containsInAnyOrder(false, true)));
+    }
+    @Test
+    void sendMessageToUser() throws Exception {
+        doNothing().when(userService).sendMessageToUser(1L, "test");
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(ANIMAL_USER + "/7/message" )
+                        .param("text","test")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+    @Test
+    void extendPeriod() throws Exception {
+        when(userService.extendPeriod(1L, 10)).thenReturn(new UserEntity());
+        mockMvc.perform(MockMvcRequestBuilders
+                        .patch(ANIMAL_USER + "/7/period" )
+                        .param("number","10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+    @Test
+    void findReportUser() throws Exception {
+        when(userService.findReportUser(1L)).thenReturn(List.of(new ReportEntity()));
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(ANIMAL_USER + "/7/reports" )
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

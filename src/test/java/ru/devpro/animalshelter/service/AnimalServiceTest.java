@@ -54,11 +54,11 @@ class AnimalServiceTest {
         animalEntity.setAnimalName("Guchka");
         animalEntity.setAnimalType(AnimalType.DOG);
 
-        when(animalRepository.findById(anyLong())).thenReturn(animalEntity);
-        AnimalEntity animal = animalService.findAnimalById(1L);
-        assertEquals(1L, animal.getId());
-        assertEquals("Guchka", animal.getAnimalName());
-        assertEquals(AnimalType.DOG, animal.getAnimalType());
+        when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animalEntity));
+        Optional<AnimalEntity> animal = animalService.findAnimalById(1L);
+        assertEquals(1L, animal.get().getId());
+        assertEquals("Guchka", animal.get().getAnimalName());
+        assertEquals(AnimalType.DOG, animal.get().getAnimalType());
     }
 
     @Test
@@ -73,7 +73,7 @@ class AnimalServiceTest {
         animalEntity1.setAnimalName("Guc");
         animalEntity1.setAnimalType(AnimalType.DOG);
 
-        when(animalRepository.findById(anyLong())).thenReturn(animalEntity);
+        when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animalEntity));
         when(animalRepository.save(any())).thenReturn(animalEntity1);
         AnimalEntity animal = animalService.editAnimal(1L, animalEntity1);
         assertEquals(1L, animal.getId());
@@ -83,7 +83,7 @@ class AnimalServiceTest {
     @Test
     void editAnimalWithNull() throws Exception {
 
-        when(animalRepository.findById(anyLong())).thenReturn(null);
+        when(animalRepository.findById(anyLong())).thenReturn(Optional.empty());
         AnimalEntity animalEntity = animalService.editAnimal(7L, new AnimalEntity());
         assertNull(animalEntity);
 

@@ -16,6 +16,7 @@ import ru.devpro.animalshelter.service.ReportService;
 
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/animal")
@@ -100,11 +101,11 @@ public class AnimalController {
     public ResponseEntity<AnimalEntity> findAnimal(
             @Parameter(description = "id животного которого нужно найти", example = "1")
             @PathVariable Long id) {
-        AnimalEntity animalEntity = animalService.findAnimalById(id);
-        if (animalEntity == null) {
+        Optional<AnimalEntity> animalEntity = animalService.findAnimalById(id);
+        if (animalEntity.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(animalEntity);
+        return ResponseEntity.ok(animalEntity.get());
     }
 
     @ApiResponse(responseCode = "200")

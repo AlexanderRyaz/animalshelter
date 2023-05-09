@@ -101,6 +101,7 @@ class ShelterControllerTest {
         when(shelterService.editShelter(anyLong(), any())).thenReturn(shelterEntity);
         mockMvc.perform(MockMvcRequestBuilders
                         .put(SHELTER_MAPPING + "/" + 7)
+                        .content(new ObjectMapper().writeValueAsString(shelterEntity))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
