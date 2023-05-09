@@ -83,7 +83,7 @@ class AnimalServiceTest {
     @Test
     void editAnimalWithNull() throws Exception {
 
-        when(animalRepository.findById(anyLong())).thenReturn(null);
+        when(animalRepository.findById(anyLong())).thenReturn(Optional.empty());
         AnimalEntity animalEntity = animalService.editAnimal(7L, new AnimalEntity());
         assertNull(animalEntity);
 

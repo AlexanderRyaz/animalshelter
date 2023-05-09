@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -144,7 +145,7 @@ class AnimalControllerTest {
     void findAnimalWithNull() throws Exception {
 
 
-        when(animalService.findAnimalById(anyLong())).thenReturn(null);
+        when(animalService.findAnimalById(anyLong())).thenReturn(Optional.empty());
         mockMvc.perform(MockMvcRequestBuilders
                         .get(ANIMAL_MAPPING + "/" + 7)
                         .accept(MediaType.APPLICATION_JSON))
@@ -160,5 +161,15 @@ class AnimalControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    void getPhoto() throws Exception {
+        Pair<String, byte[]> pair = Pair.of("image/jpeg", new byte[]{1, 2, 3});
+        when(reportService.getPhoto(anyLong())).thenReturn(pair);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(ANIMAL_MAPPING + "/photo/" + 7)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

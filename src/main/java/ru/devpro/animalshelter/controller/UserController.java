@@ -178,7 +178,7 @@ public class UserController {
             @Parameter(description = "id пользователя", example = "1")
             @PathVariable Long id,
             @Parameter(description = "Количество дней", example = "14")
-            @RequestParam("numder") Integer number) {
+            @RequestParam("number") Integer number) {
         return ResponseEntity.ok(userService.extendPeriod(id, number));
     }
 
