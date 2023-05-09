@@ -7,11 +7,11 @@ import ru.devpro.animalshelter.core.dto.DialogDto;
 import static ru.devpro.animalshelter.configuration.BotConstants.*;
 
 @Component
-public class CatsDialog implements DialogInterface{
+public class RecommendationsDialog implements DialogInterface{
 
     @Override
     public boolean isSupport(DialogDto dialogDto) {
-        return dialogDto.message().equals(CATS_CMD);
+        return dialogDto.message().equals(RECOMMENDATIONS_CMD);
     }
 
     @Override
@@ -21,11 +21,11 @@ public class CatsDialog implements DialogInterface{
 
     @Override
     public String getMessage(Long chatId) {
-        return CATS_INFO_MSG;
+        return RECOMMENDATIONS_INFO_MSG;
     }
 
     @Override
     public ReplyKeyboardMarkup getKeyboard() {
-        return CONSULTING_CAT_KEYBOARD;
+        return RECOMMENDATIONS_KEYBOARD;
     }
 }

@@ -26,6 +26,6 @@ public class DogsDialog implements DialogInterface{
 
     @Override
     public ReplyKeyboardMarkup getKeyboard() {
-        return CONSULTING_KEYBOARD;
+        return CONSULTING_DOG_KEYBOARD;
     }
 }
