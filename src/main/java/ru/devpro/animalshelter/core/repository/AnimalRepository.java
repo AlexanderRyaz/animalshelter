@@ -7,6 +7,6 @@ import ru.devpro.animalshelter.core.entity.UserEntity;
 
 @Repository
 public interface AnimalRepository extends JpaRepository<AnimalEntity, Long> {
-    AnimalEntity findById(long id);
+
 }
 

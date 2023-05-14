@@ -7,11 +7,11 @@ import ru.devpro.animalshelter.core.dto.DialogDto;
 import static ru.devpro.animalshelter.configuration.BotConstants.*;
 
 @Component
-public class DogsDialog implements DialogInterface{
+public class DogHandlerDialog implements DialogInterface{
 
     @Override
     public boolean isSupport(DialogDto dialogDto) {
-        return dialogDto.message().equals(DOGS_CMD);
+        return dialogDto.message().equals(DOG_HANDLER_CMD);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class DogsDialog implements DialogInterface{
 
     @Override
     public String getMessage(Long chatId) {
-        return DOGS_INFO_MSG;
+        return DOG_HANDLER_MSG;
     }
 
     @Override

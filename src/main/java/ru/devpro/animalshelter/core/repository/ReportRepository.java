@@ -6,5 +6,5 @@ import ru.devpro.animalshelter.core.entity.ReportEntity;
 
 @Repository
 public interface ReportRepository extends JpaRepository<ReportEntity, Long> {
-    ReportEntity findById(long id);
+
 }
