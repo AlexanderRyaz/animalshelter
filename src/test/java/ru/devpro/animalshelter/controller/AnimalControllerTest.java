@@ -38,8 +38,6 @@ class AnimalControllerTest {
     private AnimalController animalController;
     @MockBean
     private AnimalService animalService;
-    @MockBean
-    private ReportService reportService;
 
     @Test
     void createAnimal() throws Exception {
