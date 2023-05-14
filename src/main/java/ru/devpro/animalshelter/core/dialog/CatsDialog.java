@@ -26,6 +26,6 @@ public class CatsDialog implements DialogInterface{
 
     @Override
     public ReplyKeyboardMarkup getKeyboard() {
-        return WELCOME_KEYBOARD;
+        return CONSULTING_KEYBOARD;
     }
 }

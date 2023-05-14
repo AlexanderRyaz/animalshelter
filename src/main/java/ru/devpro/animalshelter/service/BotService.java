@@ -12,7 +12,9 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.devpro.animalshelter.core.dialog.DialogInterface;
 import ru.devpro.animalshelter.core.dto.DialogDto;
 import ru.devpro.animalshelter.core.entity.ReportEntity;
@@ -182,5 +184,16 @@ public class BotService {
         SendPhoto sendPhoto = new SendPhoto(chatId, photo);
         if (keyboard != null) sendPhoto.replyMarkup(keyboard);
         telegramBot.execute(sendPhoto);
+    }
+
+    @Scheduled(cron = "0 0/1 * * * *")
+    @Transactional(readOnly = true)
+    public void findByDate() {
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+
+        reportRepository.findAll().stream().filter(Objects::nonNull)
+                .filter(reportEntity -> ChronoUnit.DAYS.between(reportEntity.getDateTime(), now) == 1)
+                .map(ReportEntity::getUserEntity)
+                .forEach(userEntity -> telegramBot.execute(new SendMessage(userEntity.getChatId(), "Вы просрочили отправку отчета")));
     }
 }

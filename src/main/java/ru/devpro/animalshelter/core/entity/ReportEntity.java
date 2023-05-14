@@ -66,4 +66,18 @@ public class ReportEntity {
     public int hashCode() {
         return Objects.hash(id, dateTime, animalName, ration, health, behavior, photoEntity);
     }
+
+    @Override
+    public String toString() {
+        return "ReportEntity{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", animalName='" + animalName + '\'' +
+                ", ration='" + ration + '\'' +
+                ", health='" + health + '\'' +
+                ", behavior='" + behavior + '\'' +
+                ", photoEntity=" + photoEntity +
+                ", userEntity=" + userEntity +
+                '}';
+    }
 }

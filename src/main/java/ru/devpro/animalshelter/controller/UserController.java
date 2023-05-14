@@ -43,7 +43,6 @@ public class UserController {
                     )
             }
     )
-
     @PostMapping
     public ResponseEntity<UserEntity> createUser(@RequestBody UserEntity userEntity) {
 
