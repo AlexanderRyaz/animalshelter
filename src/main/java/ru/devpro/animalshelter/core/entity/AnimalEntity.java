@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.devpro.animalshelter.core.model.AnimalType;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -30,4 +31,19 @@ public class AnimalEntity {
     @Column(name = "animal_name")
     private String animalName;
 
+    @OneToOne
+    @JoinColumn(name = "Id")
+    private UserEntity userEntity;
+
+    public AnimalType getAnimalType() {
+        return animalType;
+    }
+
+    public String getAnimalName() {
+        return animalName;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
 }
