@@ -34,7 +34,7 @@ public class UserEntity {
     private LocalDateTime date;
 
     @OneToOne
-    @JoinColumn(name = "Id")
+    @JoinColumn(name = "animalId")
     private AnimalEntity animalEntity;
 
     @OneToMany(mappedBy = "userEntity")

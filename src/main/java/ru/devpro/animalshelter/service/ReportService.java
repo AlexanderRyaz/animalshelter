@@ -10,23 +10,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-import ru.devpro.animalshelter.core.entity.AnimalEntity;
 import ru.devpro.animalshelter.core.entity.PhotoEntity;
 import ru.devpro.animalshelter.core.entity.ReportEntity;
 import ru.devpro.animalshelter.core.exception.PhotoNotFoundException;
-import ru.devpro.animalshelter.core.repository.AnimalRepository;
 import ru.devpro.animalshelter.core.repository.PhotoRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import static ru.devpro.animalshelter.configuration.BotConstants.PATTERN_LOCAL_DATA;
 
 
 @Service
@@ -37,14 +30,11 @@ public class ReportService {
     private String reportsDir;
     private final TelegramBot telegramBot;
     private final PhotoRepository photoRepository;
-    private final AnimalRepository animalRepository;
 
 
-    public ReportService(TelegramBot telegramBot, PhotoRepository photoRepository,
-                         AnimalRepository animalRepository) {
+    public ReportService(TelegramBot telegramBot, PhotoRepository photoRepository) {
         this.telegramBot = telegramBot;
         this.photoRepository = photoRepository;
-        this.animalRepository = animalRepository;
     }
 
     private Path createPath(Long chatIdMs, String fileFormat) throws IOException {
@@ -120,10 +110,5 @@ public class ReportService {
 
     public ReportEntity findById(long id) {
         return null;
-    }
-
-    public List<AnimalEntity> checkReportData() {
-        LocalDate today =LocalDate.parse(LocalDate.now().toString(), DateTimeFormatter.ofPattern(PATTERN_LOCAL_DATA));
-        return animalRepository.findAllByDateLastCorrectReport(today.minusDays(3));
     }
 }

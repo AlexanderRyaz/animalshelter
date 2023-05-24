@@ -185,6 +185,4 @@ public class BotConstants {
     public static final ReplyKeyboardMarkup RECOMMENDATIONS_KEYBOARD = new ReplyKeyboardMarkup(
             new String[]{TRANSPORTING_CMD, HOME_IMPROVEMENT_CMD},
             new String[]{VOLUNTEER_CALL_CMD, GO_BACK_CMD});
-
-    public static final String PATTERN_LOCAL_DATA = "yyyy-MM-dd";
 }
