@@ -42,7 +42,9 @@ public class BotService {
 
     private ContainReport containReport = new ContainReport();
 
-    private final String parseReport = "1[)](?<diet>[\\W+]+)2[)](?<health>[\\W+]+)3[)](?<behavior>[\\W+]+)";
+    private ReportEntity reportEntity;
+
+    private final String parseReport = "1[)](?<ration>[\\W+]+)2[)](?<health>[\\W+]+)3[)](?<behavior>[\\W+]+)";
 
     private final String parsePhone = "(?<phone>[+]7-\\d{3}-\\d{3}-\\d{2}-\\d{2})(\\s)(?<name>[\\W+]+)";
 
@@ -53,6 +55,7 @@ public class BotService {
         this.reportRepository = reportRepository;
         this.reportService = reportService;
         this.userRepository = userRepository;
+
     }
 
 
@@ -111,7 +114,6 @@ public class BotService {
                     }
                     return;
                 }
-
                 DialogDto dto = new DialogDto(incomeMessage.chat().id(), update.message().from().firstName(), incomeMessage.text());
                 if (dialog.isSupport(dto) && dialog.process(dto)) {
                     sendResponse(dto.chatId(), dialog.getMessage(dto.chatId()), dialog.getKeyboard());
@@ -130,8 +132,8 @@ public class BotService {
             logger.info("Начало сбора данных для отчета");
             containReport.setRation(trim(matcher.group("ration")));
             containReport.setBehavior(trim(matcher.group("behavior")));
-            containReport.setDateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
             containReport.setHealth(trim(matcher.group("health")));
+            containReport.setDateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
         }
     }
 
@@ -153,14 +155,16 @@ public class BotService {
 
     private void saveReport(Long chatId) {
         if (Objects.equals(containReport.getUserEntity().getChatId(), chatId)) {
-            ReportEntity reportEntity = new ReportEntity(containReport.getAnimalName(),
+
+            ReportEntity report = new ReportEntity(containReport.getAnimalName(),
                     containReport.getRation(),
                     containReport.getHealth(),
                     containReport.getBehavior(),
                     containReport.getPhotoEntity(),
                     containReport.getDateTime(),
-                    containReport.getUserEntity());
-            reportRepository.save(reportEntity);
+                    containReport.getUserEntity()
+            );
+            reportRepository.save(report);
             logger.info("Отчет сохранен");
         }
         containReport = new ContainReport();

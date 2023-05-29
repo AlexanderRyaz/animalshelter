@@ -29,7 +29,7 @@ public class StartDialog implements DialogInterface{
     }
 
     @Override
-    public String getMessage(Long chatId) {
+    public String getMessage(Long id) {
         if (userService.createUser(dialog)) {
 
             return GREETING_MSG;

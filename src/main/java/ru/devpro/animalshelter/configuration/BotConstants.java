@@ -161,7 +161,7 @@ public class BotConstants {
 
 
     public static final ReplyKeyboardMarkup WELCOME_KEYBOARD = new ReplyKeyboardMarkup(
-            new String[]{DOGS_CMD, CATS_CMD},
+            new String[]{DOGS_CMD, CATS_CMD, SEND_REPORT_CMD},
             new String[]{RECOMMENDATIONS_CMD, SECURITY_CMD},
             new String[]{VOLUNTEER_CALL_CMD, SHELTER_INFO_CMD});
 
