@@ -120,7 +120,7 @@ class BotServiceTest {
         when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animalEntity));
         when(userRepository.save(any())).thenReturn(userEntity);
 
-        userService.addUserAnimal(1L, 1L);
+//        userService.addUserAnimal(1L, 1L);
 
         List<Update> updateList = new ArrayList<>(List.of(
                 getUpdate(jsonText, SEND_REPORT_CMD),

@@ -8,8 +8,6 @@ import ru.devpro.animalshelter.core.entity.UserEntity;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-
     UserEntity getUserEntitiesByChatId(Long chatId);
 
-//    Optional<UserEntity> findUserEntityChatId(Long chatId);
 }

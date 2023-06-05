@@ -7,11 +7,11 @@ import ru.devpro.animalshelter.core.dto.DialogDto;
 import static ru.devpro.animalshelter.configuration.BotConstants.*;
 
 @Component
-public class CallVolunteer implements DialogInterface{
+public class CallVolunteerMenu implements DialogInterface{
 
     @Override
     public boolean isSupport(DialogDto dialogDto) {
-        return dialogDto.message().equals(VOLUNTEER_CALL_CMD);
+        return dialogDto.message().equals(PROVIDE_CONTACTS_CMD);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class CallVolunteer implements DialogInterface{
 
     @Override
     public String getMessage(Long chatId) {
-        return PROVIDE_CONTACTS_MSG;
+        return VOLUNTEER_CALL_MSG;
     }
 
     @Override
@@ -29,4 +29,3 @@ public class CallVolunteer implements DialogInterface{
         return CALL_VOLUNTEER_KEYBOARD;
     }
 }
-

@@ -38,6 +38,7 @@ public class BotService {
     private final Map<String, DialogInterface> supportedDialogs;
     private final ReportRepository reportRepository;
     private final ReportService reportService;
+    private final UserService userService;
     private final UserRepository userRepository;
 
     private ContainReport containReport = new ContainReport();
@@ -49,11 +50,12 @@ public class BotService {
     private final String parsePhone = "(?<phone>[+]7-\\d{3}-\\d{3}-\\d{2}-\\d{2})(\\s)(?<name>[\\W+]+)";
 
 
-    public BotService(TelegramBot bot, Map<String, DialogInterface> supportedDialogs, ReportRepository reportRepository, ReportService reportService, UserRepository userRepository) {
+    public BotService(TelegramBot bot, Map<String, DialogInterface> supportedDialogs, ReportRepository reportRepository, ReportService reportService, UserService userService, UserRepository userRepository) {
         this.telegramBot = bot;
         this.supportedDialogs = supportedDialogs;
         this.reportRepository = reportRepository;
         this.reportService = reportService;
+        this.userService = userService;
         this.userRepository = userRepository;
 
     }
@@ -79,6 +81,13 @@ public class BotService {
                 logger.debug("ChatId = {}; null message", incomeMessage.chat().id());
                 return;
             }
+            if (incomeMessage.contact() != null) {
+                logger.info("получен контакт");
+
+//                userService.findUserIsVolunteer();
+
+                sendResponse(incomeMessage.chat().id(), "Пользователь хочет связаться с волонтером", WELCOME_KEYBOARD);
+            }
             if (incomeMessage.photo() != null) {
                 if (update.message().photo()[update.message().photo().length - 1].fileId() != null
                         && Objects.equals(containReport.getUserEntity().getChatId(), incomeMessage.chat().id())) {
@@ -93,7 +102,7 @@ public class BotService {
                 if (incomeMessage.text().matches(parsePhone)) {
                     logger.info("ChatId = {}; Номер телефона в сообщении", incomeMessage.chat().id());
                     parsePhone(incomeMessage.text(), incomeMessage.chat().id());
-                    sendResponse(incomeMessage.chat().id(), "Ваш номер телефона сохранен", SHELTER_KEYBOARD);
+                    sendResponse(incomeMessage.chat().id(), "Ваш номер телефона сохранен", WELCOME_KEYBOARD);
                     return;
                 }
                 if (incomeMessage.text().matches(parseReport)) {
@@ -140,6 +149,7 @@ public class BotService {
     private void parsePhone(String text, Long chatId) {
         Pattern pattern = Pattern.compile(parsePhone);
         Matcher matcher = pattern.matcher(text);
+        logger.info("берем контакты");
         if (matcher.matches()) {
             UserEntity userEntity = userRepository.getUserEntitiesByChatId(chatId);
             if (userEntity == null) {
@@ -156,7 +166,8 @@ public class BotService {
     private void saveReport(Long chatId) {
         if (Objects.equals(containReport.getUserEntity().getChatId(), chatId)) {
 
-            ReportEntity report = new ReportEntity(containReport.getAnimalName(),
+            ReportEntity reportEntity = new ReportEntity(
+                    containReport.getAnimalName(),
                     containReport.getRation(),
                     containReport.getHealth(),
                     containReport.getBehavior(),
@@ -164,7 +175,7 @@ public class BotService {
                     containReport.getDateTime(),
                     containReport.getUserEntity()
             );
-            reportRepository.save(report);
+            reportRepository.save(reportEntity);
             logger.info("Отчет сохранен");
         }
         containReport = new ContainReport();

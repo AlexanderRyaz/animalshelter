@@ -96,6 +96,28 @@ public class UserController {
         return ResponseEntity.ok(userService.addUserAnimal(id, animalId));
     }
 
+    @Operation(
+            summary = "Назначение пользователя волонтером",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Назначение пользователя волонтером",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserEntity.class)
+                            )
+                    )
+            }
+    )
+    @PatchMapping("/{id}/user")
+    public ResponseEntity<UserEntity> addUserIsVolunteer(
+            @Parameter(description = "id пользователя", example = "1")
+            @PathVariable Long id,
+            @Parameter(description = "Назначить пользователя волонтером?", example = "true")
+            @RequestParam("is_volunteer") Boolean isVolunteer) {
+        return ResponseEntity.ok(userService.addUserIsVolunteer(id, isVolunteer));
+    }
+
     // удаление пользователя
     @Operation(
             summary = "Удаление пользователя из БД",

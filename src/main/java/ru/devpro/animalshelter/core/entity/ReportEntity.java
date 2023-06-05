@@ -36,7 +36,7 @@ public class ReportEntity {
     @JoinColumn(name = "photoId")
     private PhotoEntity photoEntity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE) // ALL сменить на MERGE
     @JoinColumn(name = "userId")
     private UserEntity userEntity;
 

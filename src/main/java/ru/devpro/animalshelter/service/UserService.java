@@ -123,4 +123,21 @@ public class UserService {
             return new UserNotFoundException(id);
         });
     }
+
+    public UserEntity addUserIsVolunteer(Long id, Boolean isVolunteer) {
+        logger.info("Вызов метода назначения пользователя волонтером");
+
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(id);
+
+        if (optionalUserEntity.isEmpty()) {
+            logger.error("Не найден поьзователь с id = {}", id);
+            throw new UserNotFoundException(id);
+        }
+
+        UserEntity userEntity = optionalUserEntity.get();
+        userEntity.setIsVolunteer(isVolunteer);
+        return userRepository.save(userEntity);
+    }
+
+
 }
