@@ -96,18 +96,7 @@ class BotServiceTest {
     public void reportTest() throws URISyntaxException, IOException {
         String jsonText = Files.readString(Paths.get(Objects.requireNonNull(BotServiceTest.class.getResource("message.json")).toURI()));
 
-//        AnimalEntity animalEntity = new AnimalEntity(1L, AnimalType.DOG, "Guchka");
-//        animalRepository.save(animalEntity);
-//
-//        UserEntity userEntity = new UserEntity("Oleg",2L, false );
-//        userEntity.setUserName("Oleg");
-//        userEntity.setChatId(2L);
-//        userEntity.setId(1L);
-//        userEntity.setIsVolunteer(false);
-//        userRepository.save(userEntity);
-//
         UserEntity userEntity = new UserEntity("Oleg", 1L, false);
-//        userEntity.setId(5L);
         assertThat(userEntity).isNotNull();
 
         AnimalEntity animalEntity = new AnimalEntity();
@@ -120,11 +109,14 @@ class BotServiceTest {
         when(animalRepository.findById(anyLong())).thenReturn(Optional.of(animalEntity));
         when(userRepository.save(any())).thenReturn(userEntity);
 
-//        userService.addUserAnimal(1L, 1L);
+        userRepository.getUserEntitiesByChatId(1L);
+        animalRepository.getReferenceById(1L);
+        userService.addUserAnimal(1L, 1L);
 
         List<Update> updateList = new ArrayList<>(List.of(
                 getUpdate(jsonText, SEND_REPORT_CMD),
                 getUpdate(jsonText, "1) Ест 2) Гавкает 3) Скачет")));
+
 
         botService.process(updateList.get(0));
         botService.process(updateList.get(1));
