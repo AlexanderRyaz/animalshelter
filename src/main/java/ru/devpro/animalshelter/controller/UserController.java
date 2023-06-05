@@ -118,6 +118,27 @@ public class UserController {
         return ResponseEntity.ok(userService.addUserIsVolunteer(id, isVolunteer));
     }
 
+
+    @Operation(
+            summary = "Поиск пользователя-волонтера",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Поиск пользователя-волонтера",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserEntity.class)
+                            )
+                    )
+            }
+    )
+    @PatchMapping("/{id}/user_volunteer")
+    public ResponseEntity<UserEntity> findUserIsVolunteer(
+            @Parameter(description = "id волонтера", example = "1")
+            @PathVariable Long id) {
+        return ResponseEntity.ok(userService.findUserIsVolunteer(id));
+    }
+
     // удаление пользователя
     @Operation(
             summary = "Удаление пользователя из БД",

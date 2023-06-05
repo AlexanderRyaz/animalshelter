@@ -139,5 +139,13 @@ public class UserService {
         return userRepository.save(userEntity);
     }
 
+    public UserEntity findUserIsVolunteer(Long id) {
+        logger.info("Вызов метода поиска пользователя-волонтера");
+
+        return userRepository.findById(id).filter(UserEntity::getIsVolunteer).orElseThrow(() -> {
+            logger.error("Волонтер с id = {} не найден", id);
+            return new UserNotFoundException(id);
+        });
+    }
 
 }
