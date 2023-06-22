@@ -4,6 +4,8 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
+import com.pengrad.telegrambot.request.ForwardMessage;
+import com.pengrad.telegrambot.request.SendContact;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import ru.devpro.animalshelter.core.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -84,9 +87,15 @@ public class BotService {
             if (incomeMessage.contact() != null) {
                 logger.info("получен контакт");
 
-//                userService.findUserIsVolunteer();
+                List<UserEntity> volunteers = userRepository.findAllByIsVolunteerIsTrue();
 
-                sendResponse(incomeMessage.chat().id(), "Пользователь хочет связаться с волонтером", WELCOME_KEYBOARD);
+                for (UserEntity volunteer : volunteers) {
+                    sendResponse(volunteer.getChatId(), "Волонтер! Пользователь хочет с вами связаться", WELCOME_KEYBOARD);
+                    telegramBot.execute(new ForwardMessage(volunteer.getChatId(), incomeMessage.chat().id(), incomeMessage.messageId()));
+
+//                        telegramBot.execute(new SendContact(volunteer.getChatId(), "+7987654321", "name"));
+                    break;
+                }return;
             }
             if (incomeMessage.photo() != null) {
                 if (update.message().photo()[update.message().photo().length - 1].fileId() != null
