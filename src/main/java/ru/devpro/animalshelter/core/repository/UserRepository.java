@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     List<UserEntity> findAllByIsVolunteerIsTrue();
 
+    UserEntity findByChatId(Long chatId);
+
 }

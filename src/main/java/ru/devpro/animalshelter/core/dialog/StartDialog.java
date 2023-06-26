@@ -3,6 +3,7 @@ package ru.devpro.animalshelter.core.dialog;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import org.springframework.stereotype.Component;
 import ru.devpro.animalshelter.core.dto.DialogDto;
+import ru.devpro.animalshelter.core.repository.UserRepository;
 import ru.devpro.animalshelter.service.UserService;
 
 import static ru.devpro.animalshelter.configuration.BotConstants.*;
@@ -10,10 +11,12 @@ import static ru.devpro.animalshelter.configuration.BotConstants.*;
 @Component
 public class StartDialog implements DialogInterface{
 
+    private final UserRepository userRepository;
     private final UserService userService;
     private DialogDto dialog;
 
-    public StartDialog(UserService userService) {
+    public StartDialog(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
         this.userService = userService;
     }
 
@@ -29,12 +32,13 @@ public class StartDialog implements DialogInterface{
     }
 
     @Override
-    public String getMessage(Long id) {
-        if (userService.createUser(dialog)) {
+    public String getMessage(Long chatId) {
+        if (userRepository.findByChatId(chatId) == null) {
 
-            return GREETING_MSG;
+            userService.createUser(dialog);
+            return GREETING_MSG; //приветственное сообщение новому пользователю
         } else {
-            return "Привет! Чем я вам могу помочь?";
+            return "Привет! Чем я вам могу помочь?"; // сообщение пользователю который уже есть в бд
         }
 
     }
