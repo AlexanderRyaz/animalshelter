@@ -4,6 +4,8 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
+import com.pengrad.telegrambot.request.ForwardMessage;
+import com.pengrad.telegrambot.request.SendContact;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import ru.devpro.animalshelter.core.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -38,21 +41,26 @@ public class BotService {
     private final Map<String, DialogInterface> supportedDialogs;
     private final ReportRepository reportRepository;
     private final ReportService reportService;
+    private final UserService userService;
     private final UserRepository userRepository;
 
     private ContainReport containReport = new ContainReport();
 
-    private final String parseReport = "1[)](?<diet>[\\W+]+)2[)](?<health>[\\W+]+)3[)](?<behavior>[\\W+]+)";
+    private ReportEntity reportEntity;
+
+    private final String parseReport = "1[)](?<ration>[\\W+]+)2[)](?<health>[\\W+]+)3[)](?<behavior>[\\W+]+)";
 
     private final String parsePhone = "(?<phone>[+]7-\\d{3}-\\d{3}-\\d{2}-\\d{2})(\\s)(?<name>[\\W+]+)";
 
 
-    public BotService(TelegramBot bot, Map<String, DialogInterface> supportedDialogs, ReportRepository reportRepository, ReportService reportService, UserRepository userRepository) {
+    public BotService(TelegramBot bot, Map<String, DialogInterface> supportedDialogs, ReportRepository reportRepository, ReportService reportService, UserService userService, UserRepository userRepository) {
         this.telegramBot = bot;
         this.supportedDialogs = supportedDialogs;
         this.reportRepository = reportRepository;
         this.reportService = reportService;
+        this.userService = userService;
         this.userRepository = userRepository;
+
     }
 
 
@@ -76,6 +84,19 @@ public class BotService {
                 logger.debug("ChatId = {}; null message", incomeMessage.chat().id());
                 return;
             }
+            if (incomeMessage.contact() != null) {
+                logger.info("получен контакт");
+
+                List<UserEntity> volunteers = userRepository.findAllByIsVolunteerIsTrue();
+
+                for (UserEntity volunteer : volunteers) {
+                    sendResponse(volunteer.getChatId(), "Волонтер! Пользователь хочет с вами связаться", WELCOME_KEYBOARD);
+                    telegramBot.execute(new ForwardMessage(volunteer.getChatId(), incomeMessage.chat().id(), incomeMessage.messageId()));
+
+//                        telegramBot.execute(new SendContact(volunteer.getChatId(), "+7987654321", "name"));
+                    break;
+                }return;
+            }
             if (incomeMessage.photo() != null) {
                 if (update.message().photo()[update.message().photo().length - 1].fileId() != null
                         && Objects.equals(containReport.getUserEntity().getChatId(), incomeMessage.chat().id())) {
@@ -90,7 +111,7 @@ public class BotService {
                 if (incomeMessage.text().matches(parsePhone)) {
                     logger.info("ChatId = {}; Номер телефона в сообщении", incomeMessage.chat().id());
                     parsePhone(incomeMessage.text(), incomeMessage.chat().id());
-                    sendResponse(incomeMessage.chat().id(), "Ваш номер телефона сохранен", SHELTER_KEYBOARD);
+                    sendResponse(incomeMessage.chat().id(), "Ваш номер телефона сохранен", WELCOME_KEYBOARD);
                     return;
                 }
                 if (incomeMessage.text().matches(parseReport)) {
@@ -111,7 +132,6 @@ public class BotService {
                     }
                     return;
                 }
-
                 DialogDto dto = new DialogDto(incomeMessage.chat().id(), update.message().from().firstName(), incomeMessage.text());
                 if (dialog.isSupport(dto) && dialog.process(dto)) {
                     sendResponse(dto.chatId(), dialog.getMessage(dto.chatId()), dialog.getKeyboard());
@@ -130,14 +150,15 @@ public class BotService {
             logger.info("Начало сбора данных для отчета");
             containReport.setRation(trim(matcher.group("ration")));
             containReport.setBehavior(trim(matcher.group("behavior")));
-            containReport.setDateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
             containReport.setHealth(trim(matcher.group("health")));
+            containReport.setDateTime(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
         }
     }
 
     private void parsePhone(String text, Long chatId) {
         Pattern pattern = Pattern.compile(parsePhone);
         Matcher matcher = pattern.matcher(text);
+        logger.info("берем контакты");
         if (matcher.matches()) {
             UserEntity userEntity = userRepository.getUserEntitiesByChatId(chatId);
             if (userEntity == null) {
@@ -153,13 +174,16 @@ public class BotService {
 
     private void saveReport(Long chatId) {
         if (Objects.equals(containReport.getUserEntity().getChatId(), chatId)) {
-            ReportEntity reportEntity = new ReportEntity(containReport.getAnimalName(),
+
+            ReportEntity reportEntity = new ReportEntity(
+                    containReport.getAnimalName(),
                     containReport.getRation(),
                     containReport.getHealth(),
                     containReport.getBehavior(),
                     containReport.getPhotoEntity(),
                     containReport.getDateTime(),
-                    containReport.getUserEntity());
+                    containReport.getUserEntity()
+            );
             reportRepository.save(reportEntity);
             logger.info("Отчет сохранен");
         }

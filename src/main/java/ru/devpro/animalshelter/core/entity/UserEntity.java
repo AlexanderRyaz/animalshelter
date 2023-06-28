@@ -62,22 +62,25 @@ public class UserEntity {
         return animalEntity;
     }
 
+    public void setAnimalEntity(AnimalEntity animalEntity) {
+        this.animalEntity = animalEntity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserEntity that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(userName, that.userName) && Objects.equals(chatId, that.chatId) && Objects.equals(isVolunteer, that.isVolunteer);
+        return Objects.equals(userName, that.userName) && Objects.equals(chatId, that.chatId) && Objects.equals(isVolunteer, that.isVolunteer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, chatId, isVolunteer);
+        return Objects.hash(userName, chatId, isVolunteer);
     }
 
     @Override
     public String toString() {
         return "UserEntity{" +
-                "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", chatId=" + chatId +
                 ", isVolunteer=" + isVolunteer +
