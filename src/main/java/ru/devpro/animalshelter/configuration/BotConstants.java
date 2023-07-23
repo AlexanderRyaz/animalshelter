@@ -143,6 +143,8 @@ public class BotConstants {
             Вы можете обратиться к нашим лучшим кинологам для дополнительной консультации, получить информацию вы можете обратившись к нашим волонтерам.
             """;
 
+    public static final String PROVIDE_CONTACTS_MSG = "Если вы хотите чтобы волонтер связался свами в ТГ нажмите кнопку \"Предоставить контакт ТГ\".";
+
     public static final String USER_CONTACTS_CMD = "Оставить контакты";
     public static final String GO_BACK_CMD =            "Главное меню";
     public static final String DOGS_CMD =               "Взять собаку";
@@ -158,12 +160,14 @@ public class BotConstants {
     public static final String TRANSPORTING_CMD = "Рекомендации по транспортировке животного";
     public static final String HOME_IMPROVEMENT_CMD = "Рекомендаций по обустройству дома";
     public static final String DOG_HANDLER_CMD = "Кинолог для собак";
+    public static final String PROVIDE_CONTACTS_CMD = "Предоставить контакт ТГ";
 
 
     public static final ReplyKeyboardMarkup WELCOME_KEYBOARD = new ReplyKeyboardMarkup(
-            new String[]{DOGS_CMD, CATS_CMD},
+            new String[]{DOGS_CMD, CATS_CMD, SEND_REPORT_CMD},
             new String[]{RECOMMENDATIONS_CMD, SECURITY_CMD},
-            new String[]{VOLUNTEER_CALL_CMD, SHELTER_INFO_CMD});
+            new String[]{VOLUNTEER_CALL_CMD, SHELTER_INFO_CMD},
+            new String[]{SEND_REPORT_CMD, USER_CONTACTS_CMD});
 
     public static final ReplyKeyboardMarkup CONSULTING_KEYBOARD = new ReplyKeyboardMarkup(
             new String[]{USER_CONTACTS_CMD, VOLUNTEER_CALL_CMD},
@@ -185,4 +189,7 @@ public class BotConstants {
     public static final ReplyKeyboardMarkup RECOMMENDATIONS_KEYBOARD = new ReplyKeyboardMarkup(
             new String[]{TRANSPORTING_CMD, HOME_IMPROVEMENT_CMD},
             new String[]{VOLUNTEER_CALL_CMD, GO_BACK_CMD});
+
+    public static final ReplyKeyboardMarkup CALL_VOLUNTEER_KEYBOARD = new ReplyKeyboardMarkup(
+            new KeyboardButton(PROVIDE_CONTACTS_CMD).requestContact(true), new KeyboardButton(GO_BACK_CMD));
 }

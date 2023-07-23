@@ -123,4 +123,29 @@ public class UserService {
             return new UserNotFoundException(id);
         });
     }
+
+    public UserEntity addUserIsVolunteer(Long id, Boolean isVolunteer) {
+        logger.info("Вызов метода назначения пользователя волонтером");
+
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(id);
+
+        if (optionalUserEntity.isEmpty()) {
+            logger.error("Не найден поьзователь с id = {}", id);
+            throw new UserNotFoundException(id);
+        }
+
+        UserEntity userEntity = optionalUserEntity.get();
+        userEntity.setIsVolunteer(isVolunteer);
+        return userRepository.save(userEntity);
+    }
+
+    public UserEntity findUserIsVolunteer(Long id) {
+        logger.info("Вызов метода поиска пользователя-волонтера");
+
+        return userRepository.findById(id).filter(UserEntity::getIsVolunteer).orElseThrow(() -> {
+            logger.error("Волонтер с id = {} не найден", id);
+            return new UserNotFoundException(id);
+        });
+    }
+
 }

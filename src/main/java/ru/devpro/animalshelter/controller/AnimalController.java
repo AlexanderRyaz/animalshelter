@@ -2,10 +2,12 @@ package ru.devpro.animalshelter.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,13 @@ public class AnimalController {
 
     @Operation(
             summary = "Добавление животного в БД",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "данные создаваемого животного",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = AnimalEntity.class)
+                    )
+            ),
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -44,7 +53,7 @@ public class AnimalController {
             }
     )
     @PostMapping
-    public ResponseEntity<AnimalEntity> createAnimal(@RequestBody AnimalEntity animalEntity) {
+    public ResponseEntity<AnimalEntity> createAnimal(@RequestBody @Valid AnimalEntity animalEntity) {
         return ResponseEntity.ok(animalService.createAnimal(animalEntity));
     }
 
@@ -56,7 +65,7 @@ public class AnimalController {
                             description = "Возвращает коллекцию имеющихся питомцев",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = AnimalEntity.class)
+                                    array = @ArraySchema(schema = @Schema(implementation = AnimalEntity.class))
                             )
                     )
             }
